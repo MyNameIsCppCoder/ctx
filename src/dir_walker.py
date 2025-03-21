@@ -19,13 +19,15 @@ def dir_walker(ext: str, output_file_name: str, additional_exclude_dirs: set[str
         TextColumn,
     )
     
-    with Progress(
+    progress = Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
         TimeElapsedColumn(),
         transient=True,
-    ) as progress:
-        scan_task = progress.add_task(f"🔍 Scanning for {ext} files...", total=0)
+    )
+    
+    progress.start()
+    scan_task = progress.add_task(f"🔍 Scanning for {ext} files...", total=0)
     summary: Summary = {}
     total_lines = 0
     file_contents: list[str] = []
@@ -33,7 +35,8 @@ def dir_walker(ext: str, output_file_name: str, additional_exclude_dirs: set[str
     if additional_exclude_dirs is not set():
         exclude_dirs = exclude_dirs.union(additional_exclude_dirs)
 
-    for root, dirs, files in os.walk('.'):
+    with progress:
+        for root, dirs, files in os.walk('.'):
         dirs[:] = [d for d in dirs if d not in exclude_dirs]
         for file in files:
             if file.endswith(ext) and file != output_file_name:
@@ -43,7 +46,8 @@ def dir_walker(ext: str, output_file_name: str, additional_exclude_dirs: set[str
                     total_lines += len(lines)
                     summary[file_path] = len(lines)
                     # Collect file content for context
-                    file_contents.extend([
+            progress.update(scan_task, advance=1)
+            file_contents.extend([
                         f"\n----- The start of file: {file_path} -----\n",
                         "".join(lines),
                         f"\n----- The end of file: {file_path} (строк: {len(lines)}) -----\n"
