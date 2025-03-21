@@ -1,5 +1,6 @@
 import os
 from typing import Dict, NamedTuple
+from rich.progress import Progress, TaskID
 
 Summary = Dict[str, int]
 
