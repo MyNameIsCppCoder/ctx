@@ -6,9 +6,9 @@ def main():
     ext = make_language_choice()
     output_file_name = 'ctx' + ext
     check_if_output_file_exist(output_file_name)
-    summary, total_lines = dir_walker(ext, output_file_name)
-    report_text = report(summary, total_lines)
-    write_context(report_text, output_file_name)
+    result = dir_walker(ext, output_file_name)
+    report_text = report(result.summary, result.total_lines)
+    write_context(report_text, output_file_name, result.file_contents)
 
 if __name__ == '__main__':
     main()

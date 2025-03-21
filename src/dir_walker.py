@@ -24,9 +24,15 @@ def dir_walker(ext: str, output_file_name: str, additional_exclude_dirs: set[str
                     lines = f.readlines()
                     total_lines += len(lines)
                     summary[file_path] = len(lines)
-                    with open(output_file_name, 'w', encoding='utf-8') as fo:
-                        fo.write(f"\n----- The start of file: {file_path} -----\n")
-                        for line in lines:
-                            fo.write(line)
-                        fo.write(f"----- The end of file: {file_path} (строк: {len(lines)}) -----\n")
+                    # Collect file content for context
+                    file_content = [
+                        f"\n----- The start of file: {file_path} -----\n",
+                        "".join(lines),
+                        f"\n----- The end of file: {file_path} (строк: {len(lines)}) -----\n"
+                    ]
+    return DirWalkerOutput(
+        summary=summary,
+        total_lines total_lines,
+        file_contents=file_content
+    )
     return DirWalkerOutput(summary=summary, total_lines=total_lines)
