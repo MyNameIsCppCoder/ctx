@@ -10,6 +10,21 @@ class DirWalkerOutput(NamedTuple):
 
 
 def dir_walker(ext: str, output_file_name: str, additional_exclude_dirs: set[str] = set()) -> DirWalkerOutput:
+    """Scan directories with progress visualization."""
+    from rich.progress import (  # Local import for thread safety
+        Progress, 
+        SpinnerColumn,
+        TimeElapsedColumn,
+        TextColumn,
+    )
+    
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        TimeElapsedColumn(),
+        transient=True,
+    ) as progress:
+        scan_task = progress.add_task(f"🔍 Scanning for {ext} files...", total=0)
     summary: Summary = {}
     total_lines = 0
     file_contents: list[str] = []
