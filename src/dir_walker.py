@@ -39,7 +39,7 @@ def dir_walker(ext: str, output_file_name: str, additional_exclude_dirs: set[str
         for root, dirs, files in os.walk('.'):
             dirs[:] = [d for d in dirs if d not in exclude_dirs]
             for file in files:
-            if file.endswith(ext) and file != output_file_name:
+                if file.endswith(ext) and file != output_file_name:
                 file_path = os.path.join(root, file)
                 with open(file_path, 'r', encoding='utf-8') as f:
                     lines = f.readlines()
