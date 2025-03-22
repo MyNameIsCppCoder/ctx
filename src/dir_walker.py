@@ -1,6 +1,11 @@
 import os
 from typing import Dict, NamedTuple
-from rich.progress import Progress, TaskID
+from rich.progress import (  # Local import for thread safety
+        Progress, 
+        SpinnerColumn,
+        TimeElapsedColumn,
+        TextColumn,
+    )
 
 Summary = Dict[str, int]
 
@@ -12,13 +17,6 @@ class DirWalkerOutput(NamedTuple):
 
 def dir_walker(ext: str, output_file_name: str, additional_exclude_dirs: set[str] = set()) -> DirWalkerOutput:
     """Scan directories with progress visualization."""
-    from rich.progress import (  # Local import for thread safety
-        Progress, 
-        SpinnerColumn,
-        TimeElapsedColumn,
-        TextColumn,
-    )
-    
     progress = Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
@@ -40,6 +38,7 @@ def dir_walker(ext: str, output_file_name: str, additional_exclude_dirs: set[str
             dirs[:] = [d for d in dirs if d not in exclude_dirs]
             for file in files:
                 if file.endswith(ext) and file != output_file_name:
+                    continue
                 file_path = os.path.join(root, file)
                 with open(file_path, 'r', encoding='utf-8') as f:
                     lines = f.readlines()
