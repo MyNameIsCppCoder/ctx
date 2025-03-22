@@ -37,11 +37,14 @@ def dir_walker(ext: str, output_file_name: str, additional_exclude_dirs: set[str
         for root, dirs, files in os.walk('.'):
             dirs[:] = [d for d in dirs if d not in exclude_dirs]
             for file in files:
-                if file.endswith(ext) and file != output_file_name:
+                if not (file.endswith(ext) and file != output_file_name):
                     continue
                 file_path = os.path.join(root, file)
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    lines = f.readlines()
+                with open(file_path, 'r', encoding='utf-8', errors='replace') as f:
+                        lines = f.readlines()
+                except (UnicodeDecodeError, PermissionError) as e:
+                    # Skip files we can't process, but continue processing others
+                    continue
                     total_lines += len(lines)
                     summary[file_path] = len(lines)
                     # Collect file content for context
