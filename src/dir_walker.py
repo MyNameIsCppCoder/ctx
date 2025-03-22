@@ -40,16 +40,20 @@ def dir_walker(ext: str, output_file_name: str, additional_exclude_dirs: set[str
                 if not (file.endswith(ext) and file != output_file_name):
                     continue
                 file_path = os.path.join(root, file)
-                with open(file_path, 'r', encoding='utf-8', errors='replace') as f:
+                try:
+                    with open(file_path, 'r', encoding='utf-8', errors='replace') as f:
                         lines = f.readlines()
+                    total_lines += len(lines)
+                    summary[file_path] = len(lines)
+                    progress.update(scan_task, advance=1)
+                    file_contents.extend([
+                        f"\n----- The start of file: {file_path} -----\n",
+                        "".join(lines),
+                        f"\n----- The end of file: {file_path} (строк: {len(lines)}) -----\n"
+                    ])
                 except (UnicodeDecodeError, PermissionError) as e:
                     # Skip files we can't process, but continue processing others
                     continue
-                    total_lines += len(lines)
-                    summary[file_path] = len(lines)
-                    # Collect file content for context
-                    progress.update(scan_task, advance=1)
-                    file_contents.extend([
                         f"\n----- The start of file: {file_path} -----\n",
                         "".join(lines),
                         f"\n----- The end of file: {file_path} (строк: {len(lines)}) -----\n"
