@@ -1,15 +1,17 @@
 import os
 from .dir_walker import Summary
+from rich.prompt import Prompt
+from rich.console import Console
+from rich.table import Table
+from rich.text import Text
+from rich.theme import Theme
+
 
 def estimate_tokens(report_text: str) -> int:
     return len(report_text.split()) // 4 if len(report_text.split()) != 0 else 0 
 
 def report(summary: Summary, total_lines: int) -> str:
     """Generate formatted report with rich styling."""
-    from rich.table import Table
-    from rich.text import Text
-    from rich.console import Console
-    
     console = Console()
     
     # Create summary table
@@ -42,10 +44,8 @@ def write_context(report_text: str, output_file_name: str, file_contents: list[s
         f.write(report_text)
         f.writelines(file_contents)
 
-from rich.prompt import Prompt
-from rich.console import Console
 
-console = Console(theme={"success": "bold green", "warning": "bold yellow", "error": "bold red"})
+console = Console(theme=Theme({"success": "bold green", "warning": "bold yellow", "error": "bold red"}))
 
 def check_if_output_file_exist(output_file_name: str) -> None:
     """Check if output file exists with interactive confirmation."""

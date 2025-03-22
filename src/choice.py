@@ -21,6 +21,7 @@ def make_language_choice() -> str:
                     ) == "y":
                         return prefs['language']
         except Exception as e:
+            print(f"The {e} is occured")
             pass
             
     # Interactive selection
@@ -36,5 +37,7 @@ def make_language_choice() -> str:
         with open(config_path, "w") as f:
             json.dump({"language": lang}, f)
     except Exception as e:
+        print(f"The {e} is occured")
         pass
         
+    return '.' + lang

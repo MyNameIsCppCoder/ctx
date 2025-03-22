@@ -51,13 +51,9 @@ def dir_walker(ext: str, output_file_name: str, additional_exclude_dirs: set[str
                         "".join(lines),
                         f"\n----- The end of file: {file_path} (строк: {len(lines)}) -----\n"
                     ])
-                except (UnicodeDecodeError, PermissionError) as e:
+                except (UnicodeDecodeError, PermissionError):
                     # Skip files we can't process, but continue processing others
                     continue
-                        f"\n----- The start of file: {file_path} -----\n",
-                        "".join(lines),
-                        f"\n----- The end of file: {file_path} (строк: {len(lines)}) -----\n"
-                    ])
     return DirWalkerOutput(
         summary=summary,
         total_lines=total_lines,
